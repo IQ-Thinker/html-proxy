@@ -133,18 +133,18 @@ Settlement.rawurlencode = function(str)
 //----------------------------
 
 define('PROXY_START', Settlement.microtime(true));
-require "vendor/autoload.php";
+require "vendor/autoload.js";
 use Proxy\Config;
 use Proxy\Http\Request;
 use Proxy\Proxy;
 // start the session
 session_start();
 // load config...
-Config.load('./config.php');
+Config.load('./config.js');
 // custom config file to be written to by a bash script or something
-Config.load('./custom_config.php');
+Config.load('./custom_config.js');
 if (!Config.get('app_key')) {
-    die("app_key inside config.php cannot be empty!");
+    die("app_key inside config.js cannot be empty!");
 }
 if (!Settlement.function_exists('curl_version')) {
     die("cURL extension is not loaded!");
@@ -171,7 +171,7 @@ if (typeof _POST['url'] !== 'undefined') {
         header("HTTP/1.1 302 Found");
         header("Location: "+Config.get('index_redirect'));
     } else {
-        console.log(render_template("./templates/main.php", {'version':this.VERSION}));
+        console.log(render_template("./templates/main.html", {'version':this.VERSION}));
     }
     exit;
 }
@@ -181,11 +181,11 @@ proxy = new Proxy();
 // load plugins
 foreach (Config.get('plugins', {}) as plugin) {
     plugin_class = plugin+'Plugin';
-    if (file_exists('./plugins/'+plugin_class+'.php')) {
+    if (file_exists('./plugins/'+plugin_class+'.js')) {
         // use user plugin from /plugins/
-        require_once './plugins/'+plugin_class+'.php';
+        require_once './plugins/'+plugin_class+'.js';
     } else if (class_exists('\\Proxy\\Plugin\\'+plugin_class)) {
-        // does the native plugin from php-proxy package with such name exist?
+        // does the native plugin from js-proxy package with such name exist?
         plugin_class = '\\Proxy\\Plugin\\'+plugin_class;
     }
     // otherwise plugin_class better be loaded already through composer.json and match namespace exactly \\Vendor\\Plugin\\SuperPlugin
@@ -193,7 +193,7 @@ foreach (Config.get('plugins', {}) as plugin) {
     proxy.addSubscriber(new plugin_class());
 }
 try {
-    // request sent to index.php
+    // request sent to index.js
     request = Request.createFromGlobals();
     // remove all GET parameters such as ?q=
     request.get.clear();
@@ -209,6 +209,6 @@ try {
         header("HTTP/1.1 302 Found");
         header("Location: {url}");
     } else {
-        console.log(render_template("./templates/main.php", {'url':url,'error_msg':ex.getMessage(),'version':this.VERSION}));
+        console.log(render_template("./templates/main.html", {'url':url,'error_msg':ex.getMessage(),'version':this.VERSION}));
     }
 }
