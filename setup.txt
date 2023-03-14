@@ -137,7 +137,7 @@ Settlement.str_replace = function(search, replace, subject, countObj)
 	$global.$locutus = $global.$locutus ||
 	{}
 	const $locutus = $global.$locutus
-	$locutus.php = $locutus.php ||
+	$locutus.js = $locutus.js ||
 	{}
 	if (typeof(search) === 'object' && typeof(replace) === 'string')
 	{
@@ -197,16 +197,16 @@ function generate_random_key()
     }
     return Settlement.md5(random);
 }
-path_config = './config.php';
-// config.php won't be writable if ran from within web server
+path_config = './config.js';
+// config.js won't be writable if ran from within web server
 if (!is_writable(path_config)) {
     exit;
 }
 key = generate_random_key();
-// open config.php
+// open config.js
 config = file_get_contents(path_config);
 // replace blank app_key with new generated key
 config = Settlement.str_replace('$config[\'app_key\'] = \'\';', '$config[\'app_key\'] = \''+key+'\';', config);
-// write to config.php
+// write to config.js
 file_put_contents(path_config, config);
 console.log("New Key: {key}\r\n");
